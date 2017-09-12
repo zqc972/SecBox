@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <group
+        android:id="@+id/menu1"
+        android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_most_use_tools"
+            android:icon="@drawable/ic_menu_camera"
+            android:title="常用工具" />
+        <item
+            android:id="@+id/nav_recent_used_tools"
+            android:icon="@drawable/ic_menu_gallery"
+            android:title="最近使用" />
+        <item
+            android:id="@+id/nav_test"
+            android:icon="@drawable/ic_menu_manage"
+            android:title="Test Activity" />
+    </group>
+
+    <group
+        android:id="@+id/menu2"
+        android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_scan_tools"
+            android:icon="@drawable/ic_menu_slideshow"
+            android:title="信息收集" />
+        <item
+            android:id="@+id/nav_cheat_attack"
+            android:icon="@drawable/ic_menu_manage"
+            android:title="欺骗攻击" />
+        <item
+            android:id="@+id/nav_sniffer"
+            android:icon="@drawable/ic_menu_camera"
+            android:title="嗅探工具"
+            />
+        <item
+            android:id="@+id/nav_password_tools"
+            android:icon="@drawable/ic_menu_camera"
+            android:title="密码工具" />
+        <item
+            android:id="@+id/nav_other_tools"
+            android:icon="@drawable/ic_menu_gallery"
+            android:title="其他工具" />
+    </group>
+
+</menu>

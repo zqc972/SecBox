@@ -1,0 +1,53 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="5dp"
+    tools:context="ui.SnifferFragment">
+
+    <EditText
+        android:id="@+id/target_ip_address"
+        android:hint="Target ip address"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <EditText
+        android:id="@+id/source_ip_address"
+        android:hint="Source ip address"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <TableLayout
+        android:layout_marginTop="10dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <TableRow>
+            <TextView
+                android:text="State:"/>
+            <TextView
+                android:layout_marginLeft="10dp"
+                android:text="Ready"/>
+        </TableRow>
+        <TableRow>
+            <TextView
+                android:text="Running Time:"/>
+            <TextView
+                android:layout_marginLeft="10dp"
+                android:text="00:00:00"/>
+        </TableRow>
+        <TableRow>
+            <TextView
+                android:text="Save path:"/>
+            <TextView
+                android:layout_marginLeft="10dp"
+                android:text="/sdcard/SecBox/sniffer/"/>
+        </TableRow>
+    </TableLayout>
+
+    <ToggleButton
+        android:layout_gravity="right"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+</LinearLayout>
