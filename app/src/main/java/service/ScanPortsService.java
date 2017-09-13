@@ -7,14 +7,21 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
 import android.os.Messenger;
+import android.os.RemoteException;
 import android.support.annotation.Nullable;
+import android.util.Log;
 import android.widget.Toast;
 
+import com.yanzhenjie.andserver.Server;
+
+import module.PortScanner;
+
 /**
- * Created by zhaoqc on 17-9-3.
+ * Created by zhaoqc on 17-9-13.
  */
 
-public class WebServerService extends Service {
+public class ScanPortsService extends Service {
+
     private Messenger mClient;
     private Messenger messenger = new Messenger(new Handler(){
         @Override
@@ -36,6 +43,8 @@ public class WebServerService extends Service {
         }
     });
 
+    private PortScanner portScanner = null;
+
     @Nullable
     @Override
     public IBinder onBind(Intent intent) {
@@ -45,24 +54,31 @@ public class WebServerService extends Service {
     @Override
     public void onCreate() {
         super.onCreate();
-        Toast.makeText(getApplicationContext(),"WebServerService start",Toast.LENGTH_SHORT).show();
+        portScanner = new PortScanner();
+        Toast.makeText(getApplicationContext(),"ScanPortsService start",Toast.LENGTH_SHORT).show();
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
-        Toast.makeText(getApplicationContext(),"WebServerService stop",Toast.LENGTH_SHORT).show();
+        Toast.makeText(getApplicationContext(),"ScanPortsService stop",Toast.LENGTH_SHORT).show();
     }
 
     public void getState() {
-
+        try {
+            Message message = new Message();
+            message.what = 0;
+            mClient.send(message);
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        }
     }
 
     public void start(Bundle configData) {
-
+        portScanner.start(false);
     }
 
     public void stop() {
-
+        portScanner.stop();
     }
 }

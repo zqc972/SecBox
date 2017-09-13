@@ -23,6 +23,7 @@
 
         <service android:name="service.MainService" />
         <service android:name="service.ScanHostsService" />
+        <service android:name="service.ScanPortsService" />
         <service android:name="service.ArpCheatService" />
         <service android:name="service.WebServerService" />
         <service android:name="service.SnifferService" />

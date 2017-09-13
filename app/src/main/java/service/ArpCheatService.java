@@ -2,6 +2,7 @@ package service;
 
 import android.app.Service;
 import android.content.Intent;
+import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
@@ -9,6 +10,7 @@ import android.os.Messenger;
 import android.os.RemoteException;
 import android.support.annotation.Nullable;
 import android.util.Log;
+import android.widget.Toast;
 
 /**
  * Created by zhaoqc on 17-8-27.
@@ -17,33 +19,25 @@ import android.util.Log;
 public class ArpCheatService extends Service {
 
     private Messenger mClient;
-    private Messenger messenger = new Messenger(new Handler() {
+    private Messenger messenger = new Messenger(new Handler(){
         @Override
         public void handleMessage(Message msgFromClient) {
-            mClient = msgFromClient.replyTo;
             switch (msgFromClient.what) {
                 case 0:
-                    stop();
+                    mClient = msgFromClient.replyTo;
+                    getState();
                     break;
                 case 1:
-                    start();
+                    start(msgFromClient.getData());
                     break;
+                case 2:
+                    stop();
                 default:
-                    Log.i("ArpCheatService", "received a message from client");
-
-                    try {
-                        Message message = new Message();
-                        message.replyTo = messenger;
-                        message.what = 1;
-                        mClient.send(message);
-                    } catch (RemoteException e) {
-                        e.printStackTrace();
-                    }
+                    Toast.makeText(getApplicationContext(),"Received a message from client" ,Toast.LENGTH_SHORT).show();
             }
             super.handleMessage(msgFromClient);
         }
     });
-
 
     @Nullable
     @Override
@@ -54,20 +48,25 @@ public class ArpCheatService extends Service {
     @Override
     public void onCreate() {
         super.onCreate();
-        Log.i("ArpCheatService", "onCreate");
+        Toast.makeText(getApplicationContext(),"ArpCheatService start",Toast.LENGTH_SHORT).show();
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
-        Log.i("ArpCheatService","onDestroy");
+        Toast.makeText(getApplicationContext(),"ArpCheatService stop",Toast.LENGTH_SHORT).show();
     }
 
-    private void start() {
+    public void getState() {
 
     }
 
-    private void stop() {
+    public void start(Bundle configData) {
 
     }
+
+    public void stop() {
+
+    }
+
 }

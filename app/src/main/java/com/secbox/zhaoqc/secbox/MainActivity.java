@@ -116,10 +116,8 @@ public class MainActivity extends AppCompatActivity
             Intent intent = new Intent(this,TestActivity.class);
             startActivity(intent);
         } else if(id == R.id.nav_recent_used_tools) {
-            Log.i("MainActivity","R.id.nav_recent_used_tools");
             getSupportFragmentManager().beginTransaction().replace(R.id.container, RecentUseFragment.newInstance()).commit();
         } else if(id == R.id.nav_most_use_tools) {
-            Log.i("MainActivity","R.id.nav_most_use_tools");
             getSupportFragmentManager().beginTransaction().replace(R.id.container, MostUseFragment.newInstance()).commit();
         } else {
             getSupportFragmentManager().beginTransaction().replace(R.id.container, FunctionListFragment.newInstance(id)).commit();

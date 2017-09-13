@@ -12,45 +12,38 @@
         android:orientation="horizontal"
         android:background="@color/colorAccent">
 
-        <TextView
-            android:text="扫描主机:"
-            android:textSize="18sp"
-            android:textColor="@android:color/white"
-            android:padding="8dp"
-            android:layout_marginTop="6dp"
-            android:layout_marginBottom="6dp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
-
-        <TextView
-            android:id="@+id/setup_info"
-            android:text="未设定"
-            android:textSize="18sp"
-            android:textColor="@android:color/white"
+        <ImageButton
+            android:id="@+id/config_threads"
             android:layout_weight="1"
-            android:padding="8dp"
-            android:layout_marginTop="6dp"
-            android:layout_marginBottom="6dp"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:layout_height="50dp"
+            android:src="@drawable/ic_tune_black_24dp"/>
 
         <ImageButton
-            android:id="@+id/expand_button"
+            android:id="@+id/enable_notice"
             android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:src="@drawable/ic_keyboard_arrow_down_black_24dp" />
+            android:layout_height="50dp"
+            android:layout_weight="1"
+            android:src="@drawable/ic_notifications_active_black_24dp"/>
+
+        <ImageButton
+            android:id="@+id/add_host"
+            android:layout_width="wrap_content"
+            android:layout_height="50dp"
+            android:layout_weight="1"
+            android:src="@drawable/ic_add_black_24dp"/>
 
         <ImageButton
             android:id="@+id/scan_button"
+            android:layout_weight="1"
             android:layout_width="wrap_content"
-            android:layout_height="match_parent"
+            android:layout_height="50dp"
             android:src="@drawable/ic_search_black_24dp"/>
 
     </LinearLayout>
 
     <LinearLayout
         android:id="@+id/progress_layout"
-        android:visibility="gone"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical">

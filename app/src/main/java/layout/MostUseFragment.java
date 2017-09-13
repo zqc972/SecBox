@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -90,6 +91,7 @@ public class MostUseFragment extends Fragment {
                         subtitlesId = 0;
                 }
                 if(titlesId != 0 && subtitlesId != 0) {
+                    Log.i("MostUseFragment","position : " + position);
                     FunctionListItem item = new FunctionListItem();
                     item.setTitle( getResources().getStringArray(titlesId) [position] );
                     item.setSubtitle(getResources().getStringArray(subtitlesId) [position]);
