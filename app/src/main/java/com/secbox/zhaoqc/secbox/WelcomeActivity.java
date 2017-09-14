@@ -41,9 +41,6 @@ public class WelcomeActivity extends AppCompatActivity {
     };
     private List<String> mPermissionList = new ArrayList<>();
 
-
-//    WelcomeActivity activity = null;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -51,9 +48,7 @@ public class WelcomeActivity extends AppCompatActivity {
 
         scrollView = (ScrollView) findViewById(R.id.scrollview);
         textView = (TextView) findViewById(R.id.boot_info);
-
-        //PrepareTask task = new PrepareTask();
-        //task.execute();
+        
         SharedPreferences pref = getApplicationContext().getSharedPreferences("WelcomeActivity",0);
         isFirstIn = pref.getBoolean("isFirstIn",true);
         SharedPreferences.Editor editor = pref.edit();
@@ -71,130 +66,80 @@ public class WelcomeActivity extends AppCompatActivity {
         }
         if(mPermissionList.isEmpty()) {
             textView.setText(textView.getText().toString() + "All permission granted\n");
-            startActivity();
+            PrepareTask task = new PrepareTask();
+            task.start();
         } else {
             String[] permissions = mPermissionList.toArray(new String[mPermissionList.size()]);
             ActivityCompat.requestPermissions(this,permissions,1);
         }
 
-//        activity = this;
     }
 
+    private Handler handler = new Handler() {
+        @Override
+        public void handleMessage(Message msgFromThread) {
+            switch (msgFromThread.what) {
+                case 1:
+                    textView.setText(textView.getText() + msgFromThread.obj.toString());
+                    break;
+                case 2:
+                    Intent intent = new Intent(WelcomeActivity.this,MainActivity.class);
+                    startActivity(intent);
+                    break;
+                default:
+            }
+            super.handleMessage(msgFromThread);
+        }
+    };
 
+    private class PrepareTask extends Thread {
 
-    private void startActivity() {
-        textView.setText(textView.getText().toString() + "Preparing database...");
-//        if(!FileUtils.isFileExist(getApplicationContext(),"/data/data/com.secbox.zhaoqc.secbox/databases/info.db"))
-            //FileUtils.copyFileFromAssets(getApplicationContext(),"info.db","/data/data/com.secbox.zhaoqc.secbox/databases/info.db");
-        Connector.getDatabase();
-        textView.setText(textView.getText().toString() + "[ok]\n");
-        textView.setText(textView.getText().toString() + "Preparing Tools...");
+        @Override
+        public void run() {
+            Message message = new Message();
 
-        if(FileUtils.copyAllFilesFromAssets(getApplicationContext(),"", "/data/data/com.secbox.zhaoqc.secbox/files"))
-            textView.setText(textView.getText().toString() + "[ok]\n");
-        else
-            textView.setText(textView.getText().toString() + "[failed]\n");
+            message. what = 1;
+            message.obj = "准备数据库中...";
+            handler.sendMessage(message);
 
-        textView.setText(textView.getText().toString() + "Make tools executable...");
-        if(FileUtils.makeFileExecutable("/data/data/com.secbox.zhaoqc.secbox/files/arpspoof")
-                && FileUtils.makeFileExecutable("/data/data/com.secbox.zhaoqc.secbox/files/httpd")
-                && FileUtils.makeFileExecutable("/data/data/com.secbox.zhaoqc.secbox/files/pkill")
-                && FileUtils.makeFileExecutable("/data/data/com.secbox.zhaoqc.secbox/files/tcpdump")
-                && FileUtils.makeFileExecutable("/data/data/com.secbox.zhaoqc.secbox/files/arpspoof"))
-                textView.setText(textView.getText().toString() + "[ok]");
+            Connector.getDatabase();
+
+            message = new Message();
+            message.what = 1;
+            message.obj = "[ok]\n准备工具中...";
+            handler.sendMessage(message);
+
+            message = new Message();
+            message.what = 1;
+            if(FileUtils.copyAllFilesFromAssets(getApplicationContext(),"", "/data/data/com.secbox.zhaoqc.secbox/files"))
+                message.obj = "[ok]\n";
             else
-                textView.setText(textView.getText().toString() + "[failed]");
+                message.obj = "[failed]\n";
+            handler.sendMessage(message);
 
-        Intent intent = new Intent(this,MainActivity.class);
-        startActivity(intent);
-        //finish();
+            message = new Message();
+            message.what = 1;
+            message.obj = "赋予执行权限";
+            handler.sendMessage(message);
+
+            message = new Message();
+            message.what = 1;
+            if(FileUtils.makeFileExecutable("/data/data/com.secbox.zhaoqc.secbox/files/arpspoof")
+                    && FileUtils.makeFileExecutable("/data/data/com.secbox.zhaoqc.secbox/files/httpd")
+                    && FileUtils.makeFileExecutable("/data/data/com.secbox.zhaoqc.secbox/files/pkill")
+                    && FileUtils.makeFileExecutable("/data/data/com.secbox.zhaoqc.secbox/files/tcpdump")
+                    && FileUtils.makeFileExecutable("/data/data/com.secbox.zhaoqc.secbox/files/arpspoof"))
+                message.obj = "[ok]\n";
+            else
+                message.obj = "[failed]\n";
+            handler.sendMessage(message);
+
+            message = new Message();
+            message.what = 2;
+            handler.sendMessage(message);
+
+        }
     }
-
-//    private class PrepareTask extends AsyncTask<Void,Integer,Void> {
-//        private String info = "";
-//
-//        @Override
-//        protected Void doInBackground(Void... params) {
-//            info = info + "SecBox is preparing...\n";
-//            publishProgress(1);
-//
-//            info = info + "Prepare DataBase...";
-//            //Connector.getDatabase();
-//            //if(!FileUtils.isFileExist(getApplicationContext(),"/data/data/com.secbox.zhaoqc.secbox/databases/info.db"))
-//            FileUtils.copyFileFromAssets(getApplicationContext(),"info.db","/data/data/com.secbox.zhaoqc.secbox/databases/info.db");
-//            info = info + " [ok]\n";
-//            publishProgress(10);
-//
-//            //chech permission
-//            info = info + "Check permission...";
-//            for (int i = 0; i < Permissions.length ; i++ ) {
-//                if(ContextCompat.checkSelfPermission(getApplicationContext(), Permissions[i]) != PackageManager.PERMISSION_GRANTED)
-//                {
-//                    ActivityCompat.requestPermissions(activity, new String[]{Permissions[i]},1);
-//                    if(ContextCompat.checkSelfPermission(getApplicationContext(), Permissions[i]) != PackageManager.PERMISSION_GRANTED)
-//                        info = info + "";
-//                }
-//            }
-//            info = info + " [ok]\n";
-//            publishProgress(20);
-//
-//            //Check permission
-//            //if(ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED)
-//            for (int i = 0; i < Permissions.length ; i++ ) {
-//                info = info + ("Check permission " + Permissions[i]);
-//                if(ContextCompat.checkSelfPermission(getApplicationContext(), Permissions[i]) != PackageManager.PERMISSION_GRANTED)
-//                {
-//                    if(ActivityCompat.shouldShowRequestPermissionRationale(activity,Permissions[i])) {
-//                        shouldShowRequestPermissionRationale(Permissions[i]);
-//                    } else {
-//                        ActivityCompat.requestPermissions(activity, new String[]{Permissions[i]},1);
-//                    }
-//
-//                    if(ContextCompat.checkSelfPermission(getApplicationContext(), Permissions[i]) != PackageManager.PERMISSION_GRANTED)
-//                        info = info + " [failed]\n";
-//                } else {
-//                    info = info + " [ok]\n";
-//                }
-//            }
-//            publishProgress(30);
-//
-//            //extract assets
-//            info = info + "Extract assets files";
-//            if(FileUtils.copyAllFilesFromAssets(getApplicationContext(),"", getFilesDir().getAbsolutePath()))
-//                info = info + " [ok]\n";
-//            else
-//                info = info + " [failed]\n";
-//            publishProgress(40);
-//
-//            //make tools executable
-//            info = info + "Make tools executable";
-//            if(FileUtils.makeFileExecutable("/data/data/com.secbox.zhaoqc.secbox/files/arpspoof")
-//                    && FileUtils.makeFileExecutable("/data/data/com.secbox.zhaoqc.secbox/files/httpd")
-//                    && FileUtils.makeFileExecutable("/data/data/com.secbox.zhaoqc.secbox/files/pkill")
-//                    && FileUtils.makeFileExecutable("/data/data/com.secbox.zhaoqc.secbox/files/tcpdump")
-//                    && FileUtils.makeFileExecutable("/data/data/com.secbox.zhaoqc.secbox/files/arpspoof"))
-//                info = info + " [ok]\n";
-//            else
-//                info = info + " [failed]\n";
-//            publishProgress(50);
-//
-//            info = info + "All things prepared\n";
-//            publishProgress(99);
-//
-//            return null;
-//        }
-//
-//        @Override
-//        protected void onProgressUpdate(Integer... progress) {
-//            textView.setText(info);
-//            scrollView.fullScroll(ScrollView.FOCUS_DOWN);
-//        }
-//
-//        @Override
-//        protected void onPostExecute(Void result) {
-//            startActivity();
-//        }
-//    }
 
     private boolean mShowRequestPermission = true; //用户是否禁止权限
 
@@ -220,7 +165,8 @@ public class WelcomeActivity extends AppCompatActivity {
                     }
                 }
                 //delayEntryPage();
-                startActivity();
+                PrepareTask task = new PrepareTask();
+                task.start();
                 break;
             default:
                 break;
