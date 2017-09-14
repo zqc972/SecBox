@@ -3,36 +3,24 @@ package ui;
 
 import android.content.ComponentName;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.ServiceConnection;
-import android.database.DataSetObserver;
-import android.graphics.ColorFilter;
-import android.graphics.ColorMatrix;
-import android.graphics.ColorMatrixColorFilter;
-import android.graphics.drawable.BitmapDrawable;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
 import android.os.Messenger;
 import android.os.RemoteException;
-import android.support.v4.app.Fragment;
-import android.support.v7.app.AlertDialog;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.BaseExpandableListAdapter;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.ExpandableListAdapter;
 import android.widget.ExpandableListView;
 import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.ProgressBar;
@@ -40,13 +28,11 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.secbox.zhaoqc.secbox.R;
-import com.yanzhenjie.andserver.util.HttpRequestParser;
 
 import org.litepal.crud.DataSupport;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import db.Port;
 import service.ScanPortsService;
@@ -138,7 +124,16 @@ public class ScanPortsFragment extends BaseFragment {
         mAddHost.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                View popupView = getActivity().getLayoutInflater().inflate(R.layout.popupwindow_scan_ports,null);
+                PopupWindow popupWindow = new PopupWindow(popupView,
+                        WindowManager.LayoutParams.WRAP_CONTENT,
+                        WindowManager.LayoutParams.WRAP_CONTENT
+                );
+                popupWindow.setBackgroundDrawable(new ColorDrawable(Color.parseColor("#FFFFFF")));
+                popupWindow.setOutsideTouchable(true);
+                popupWindow.setInputMethodMode(PopupWindow.INPUT_METHOD_NEEDED);
+                popupWindow.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
+                popupWindow.showAtLocation(getView(), Gravity.CENTER,0,0);
             }
         });
         mConfigThreads.setOnClickListener(new View.OnClickListener() {
