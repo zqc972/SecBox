@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.database.DataSetObserver;
 import android.graphics.ColorFilter;
 import android.graphics.ColorMatrix;
 import android.graphics.ColorMatrixColorFilter;
@@ -20,12 +21,16 @@ import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.widget.BaseExpandableListAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ExpandableListAdapter;
+import android.widget.ExpandableListView;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -36,6 +41,8 @@ import android.widget.Toast;
 
 import com.secbox.zhaoqc.secbox.R;
 import com.yanzhenjie.andserver.util.HttpRequestParser;
+
+import org.litepal.crud.DataSupport;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -52,12 +59,14 @@ public class ScanPortsFragment extends BaseFragment {
     private ImageButton mEnableNotice;
     private ImageButton mAddHost;
 
-    private RecyclerView recyclerView_of_ports;
-    private ArrayList<Port> port_list = new ArrayList<>();
-
     private LinearLayout mProgressLayout;
     private ProgressBar mProgress;
     private TextView mScanInfo;
+
+    private ExpandableListView expandableListView;
+    private BaseExpandableListAdapter adapter;
+    private List<String> hostsList = new ArrayList<>();
+    private List<List<Integer>> portsList = new ArrayList<>();
 
     private Messenger mService;
     private Messenger messenger = new Messenger(new Handler() {
@@ -109,7 +118,7 @@ public class ScanPortsFragment extends BaseFragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(LayoutInflater inflater, final ViewGroup container,
                              Bundle savedInstanceState) {
         navigationItemId = R.id.nav_scan_tools;
         position = 1;
@@ -145,6 +154,78 @@ public class ScanPortsFragment extends BaseFragment {
             }
         });
 
+        //
+        expandableListView = (ExpandableListView) rootView.findViewById(R.id.list);
+        adapter = new BaseExpandableListAdapter() {
+            @Override
+            public int getGroupCount() {
+                return hostsList.size();
+            }
+
+            @Override
+            public int getChildrenCount(int groupPosition) {
+                return portsList.get(groupPosition).size();
+            }
+
+            @Override
+            public Object getGroup(int groupPosition) {
+                return groupPosition;
+            }
+
+            @Override
+            public Object getChild(int groupPosition, int childPosition) {
+                return portsList.get(groupPosition).get(childPosition);
+            }
+
+            @Override
+            public long getGroupId(int groupPosition) {
+                return groupPosition;
+            }
+
+            @Override
+            public long getChildId(int groupPosition, int childPosition) {
+                return childPosition;
+            }
+
+            @Override
+            public boolean hasStableIds() {
+                return true;
+            }
+
+            @Override
+            public View getGroupView(int groupPosition, boolean isExpanded, View convertView, ViewGroup parent) {
+                convertView = View.inflate(getContext(),R.layout.item_of_scan_ports_a,null);
+                TextView host = (TextView) convertView.findViewById(R.id.host);
+                TextView state = (TextView) convertView.findViewById(R.id.state);
+                host.setText(hostsList.get(groupPosition));
+                if(portsList.get(groupPosition).size() != 0)
+                    state.setText("已扫描到的端口:" + portsList.get(groupPosition).size() + "个");
+                return convertView;
+            }
+
+            @Override
+            public View getChildView(int groupPosition, int childPosition, boolean isLastChild, View convertView, ViewGroup parent) {
+                convertView = View.inflate(getContext(),R.layout.item_of_scan_ports_b,null);
+                TextView port = (TextView) convertView.findViewById(R.id.port);
+                TextView describe = (TextView) convertView.findViewById(R.id.describe);
+                port.setText(String.valueOf(portsList.get(groupPosition).get(childPosition)));
+                Port mPort = DataSupport.where("port = ?",String.valueOf(portsList.get(groupPosition).get(childPosition))).findFirst(Port.class);
+                if(mPort != null)
+                    describe.setText(mPort.getDescription());
+                return convertView;
+            }
+
+            @Override
+            public boolean isChildSelectable(int groupPosition, int childPosition) {
+                return true;
+            }
+        };
+        expandableListView.setAdapter(adapter);
+        expandableListView.setGroupIndicator(null);
+
+        addHost("test");
+        addPort("test1",80);
+
         return rootView;
     }
 
@@ -161,7 +242,9 @@ public class ScanPortsFragment extends BaseFragment {
 
     @Override
     public void setData(Intent intent) {
+        //接收来自其他模块的传入数据
 
+        //目前暂时仅为测试数据
     }
 
     private void scan() {
@@ -170,6 +253,28 @@ public class ScanPortsFragment extends BaseFragment {
 
     private void stop() {
 
+    }
+
+
+    private void addHost(String host) {
+        hostsList.add(host);
+        List<Integer> childItems = new ArrayList<>();
+        portsList.add(childItems);
+        adapter.notifyDataSetChanged();
+    }
+
+    private void addPort(String host,int port) {
+        int position = -1;
+        for(int i = 0;i < hostsList.size();i++)
+            if(hostsList.get(i).equals(host))
+                position = i;
+        if(position != -1) {
+            portsList.get(position).add(port);
+        } else {
+            addHost(host);
+            portsList.get(portsList.size()-1).add(port);
+        }
+        adapter.notifyDataSetChanged();
     }
 
 }
