@@ -48,7 +48,7 @@ public class WelcomeActivity extends AppCompatActivity {
 
         scrollView = (ScrollView) findViewById(R.id.scrollview);
         textView = (TextView) findViewById(R.id.boot_info);
-        
+
         SharedPreferences pref = getApplicationContext().getSharedPreferences("WelcomeActivity",0);
         isFirstIn = pref.getBoolean("isFirstIn",true);
         SharedPreferences.Editor editor = pref.edit();

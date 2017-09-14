@@ -1,6 +1,7 @@
 package ui;
 
 
+import android.app.Dialog;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -19,6 +20,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.BaseExpandableListAdapter;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ExpandableListView;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
@@ -104,7 +107,7 @@ public class ScanPortsFragment extends BaseFragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, final ViewGroup container,
+    public View onCreateView(final LayoutInflater inflater, final ViewGroup container,
                              Bundle savedInstanceState) {
         navigationItemId = R.id.nav_scan_tools;
         position = 1;
@@ -124,16 +127,34 @@ public class ScanPortsFragment extends BaseFragment {
         mAddHost.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                View popupView = getActivity().getLayoutInflater().inflate(R.layout.popupwindow_scan_ports,null);
-                PopupWindow popupWindow = new PopupWindow(popupView,
-                        WindowManager.LayoutParams.WRAP_CONTENT,
-                        WindowManager.LayoutParams.WRAP_CONTENT
-                );
-                popupWindow.setBackgroundDrawable(new ColorDrawable(Color.parseColor("#FFFFFF")));
-                popupWindow.setOutsideTouchable(true);
-                popupWindow.setInputMethodMode(PopupWindow.INPUT_METHOD_NEEDED);
-                popupWindow.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
-                popupWindow.showAtLocation(getView(), Gravity.CENTER,0,0);
+//                View popupView = getActivity().getLayoutInflater().inflate(R.layout.popupwindow_scan_ports,null);
+//                PopupWindow popupWindow = new PopupWindow(popupView,
+//                        WindowManager.LayoutParams.WRAP_CONTENT,
+//                        WindowManager.LayoutParams.WRAP_CONTENT
+//                );
+//                popupWindow.setBackgroundDrawable(new ColorDrawable(Color.parseColor("#FFFFFF")));
+//                popupWindow.setOutsideTouchable(true);
+//                popupWindow.setInputMethodMode(PopupWindow.INPUT_METHOD_NEEDED);
+//                popupWindow.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
+//                popupWindow.showAtLocation(getView(), Gravity.CENTER,0,0);
+
+                View view = LayoutInflater.from(getContext()).inflate(R.layout.popupwindow_scan_ports,null);
+                final EditText editText = (EditText) view.findViewById(R.id.host);
+                Button button = (Button) view.findViewById(R.id.ok);
+                final Dialog dialog = new Dialog(getContext(),R.style.Theme_AppCompat_DayNight_Dialog);
+                dialog.setTitle("请输入主机的地址");
+                dialog.setContentView(view);
+                dialog.setCanceledOnTouchOutside(true);
+                dialog.show();
+                button.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        String host = editText.getText().toString();
+                        addHost(host);
+                        dialog.dismiss();
+                    }
+                });
+
             }
         });
         mConfigThreads.setOnClickListener(new View.OnClickListener() {
@@ -218,8 +239,8 @@ public class ScanPortsFragment extends BaseFragment {
         expandableListView.setAdapter(adapter);
         expandableListView.setGroupIndicator(null);
 
-        addHost("test");
-        addPort("test1",80);
+        addHost("192.168.1.1");
+        addPort("www.baidu.com",80);
 
         return rootView;
     }
