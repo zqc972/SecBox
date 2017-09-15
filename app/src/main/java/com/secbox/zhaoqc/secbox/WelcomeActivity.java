@@ -57,15 +57,15 @@ public class WelcomeActivity extends AppCompatActivity {
 
         mPermissionList.clear();
         for(int i = 0;i < Permissions.length;i++ ) {
-            Log.i("WelcomeActivity","Check permission:" + Permissions[i]);
+            Log.i("WelcomeActivity","检查权限:" + Permissions[i]);
             if(ContextCompat.checkSelfPermission(getApplicationContext(),Permissions[i]) != PackageManager.PERMISSION_GRANTED) {
                 mPermissionList.add(Permissions[i]);
             } else {
-                textView.setText(textView.getText().toString() + "Check permission: " + Permissions[i] + " [ok]\n");
+                textView.setText(textView.getText().toString() + "检查权限: " + Permissions[i] + " [ok]\n");
             }
         }
         if(mPermissionList.isEmpty()) {
-            textView.setText(textView.getText().toString() + "All permission granted\n");
+            textView.setText(textView.getText().toString() + "权限检测完毕\n");
             PrepareTask task = new PrepareTask();
             task.start();
         } else {
@@ -119,7 +119,7 @@ public class WelcomeActivity extends AppCompatActivity {
 
             message = new Message();
             message.what = 1;
-            message.obj = "赋予执行权限";
+            message.obj = "赋予执行权限...";
             handler.sendMessage(message);
 
             message = new Message();
@@ -158,10 +158,10 @@ public class WelcomeActivity extends AppCompatActivity {
                             return;
                         } else {
                             mShowRequestPermission = false;//已经禁止
-                            textView.setText(textView.getText().toString() + "Check permission: " + permissions[i] + " [failed]\n");
+                            textView.setText(textView.getText().toString() + "检查权限: " + permissions[i] + " [failed]\n");
                         }
                     } else {
-                        textView.setText(textView.getText().toString() + "Check permission: " + permissions[i] + " [ok]\n");
+                        textView.setText(textView.getText().toString() + "检查权限: " + permissions[i] + " [ok]\n");
                     }
                 }
                 //delayEntryPage();

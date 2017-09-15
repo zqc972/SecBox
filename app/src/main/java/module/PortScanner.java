@@ -18,8 +18,8 @@ import java.util.concurrent.TimeUnit;
 
 public class PortScanner {
 
-    private List<String> hostList = new ArrayList<String>();
-    private List<Integer> portList = new ArrayList<>();
+    private ArrayList<String> hostList = new ArrayList<String>();
+    private ArrayList<Integer> portList = new ArrayList<>();
 
     private ScheduledExecutorService mThreadPool = null;
 
@@ -60,6 +60,11 @@ public class PortScanner {
         this.hostList.add(host);
     }
 
+    public void setHostList(ArrayList<String> list) {
+        if(list != null)
+            this.hostList = list;
+    }
+
     public void removeHost(String host) {
         for(int i = 0; i < hostList.size(); i++) {
             if(hostList.get(i).equals(host)) {
@@ -75,6 +80,11 @@ public class PortScanner {
                 return;
         }
         portList.add(port);
+    }
+
+    public void setPortList(ArrayList<Integer> list) {
+        if(list != null)
+            this.portList = list;
     }
 
     public void removePort(int port){
@@ -94,13 +104,33 @@ public class PortScanner {
         public void run() {
             try {
                 Socket socket = new Socket();
-                socket.connect(new InetSocketAddress(host,port),1000);
+                socket.connect(new InetSocketAddress(host,port),3000);
                 Log.i("ScanThread","scanned success: " + host + ":" + port);
+                if(onScannedListener != null)
+                    onScannedListener.onScanned(host,port);
             } catch (IOException e) {
                 //e.printStackTrace();
                 Log.i("ScanThread","scanned failed:" + host + ":" + port);
             }
         }
+    }
+
+    public interface OnProgressListener{
+        void onProgressChanged(int progress,int current_ip,int port);
+    };
+    public interface OnScannedListener{
+        void onScanned(String host,int port);
+    }
+
+    private OnProgressListener onProgressListener = null;
+    private OnScannedListener onScannedListener = null;
+
+    public void setOnProgressListener(OnProgressListener listener) {
+        this.onProgressListener = listener;
+    }
+
+    public void setOnScannedListener(OnScannedListener listener) {
+        this.onScannedListener = listener;
     }
 }
 

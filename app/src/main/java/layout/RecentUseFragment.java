@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -68,27 +69,34 @@ public class RecentUseFragment extends Fragment {
                     case R.id.nav_scan_tools:
                         titlesId = R.array.nav_scan_tools_titles;
                         subtitlesId = R.array.nav_scan_tools_subtitles;
+                        Log.i("RecentUseFragment","nav_scan_tools = "+navigationItemId+",titlesId = " + R.array.nav_scan_tools_titles + " subtitlesId = " + R.array.nav_scan_tools_subtitles);
                         break;
                     case R.id.nav_cheat_attack:
                         titlesId = R.array.nav_cheat_attack_titles;
                         subtitlesId = R.array.nav_cheat_attack_subtitles;
+                        Log.i("RecentUseFragment","nav_cheat_attack = "+navigationItemId+",titlesId = " + R.array.nav_cheat_attack_titles + " subtitlesId = " + R.array.nav_cheat_attack_subtitles);
                         break;
                     case R.id.nav_sniffer:
                         titlesId = R.array.nav_sniffer_titles;
                         subtitlesId = R.array.nav_sniffer_subtitles;
+                        Log.i("RecentUseFragment","nav_sniffer = "+ navigationItemId +",titlesId = " + R.array.nav_sniffer_titles + " subtitlesId = " + R.array.nav_sniffer_subtitles);
                         break;
                     case R.id.nav_password_tools:
                         titlesId = R.array.nav_password_tools_titles;
                         subtitlesId = R.array.nav_password_tools_subtitles;
+                        Log.i("RecentUseFragment","nav_password_tools = " +navigationItemId+ ",titlesId = " + R.array.nav_password_tools_titles + " subtitlesId = " + R.array.nav_password_tools_subtitles);
                         break;
                     case R.id.nav_other_tools:
                         titlesId = R.array.nav_other_tools_titles;
                         subtitlesId = R.array.nav_other_tools_subtitles;
+                        Log.i("RecentUseFragment","nav_other_tools" + navigationItemId+",titlesId = " + R.array.nav_other_tools_titles + " subtitlesId = " + R.array.nav_other_tools_subtitles);
                         break;
                     default:
                         titlesId = 0;
                         subtitlesId = 0;
+                        Log.i("RecentUseFragment","default");
                 }
+                Log.i("RecentUseFragment","position = " + position);
                 if(titlesId != 0 && subtitlesId != 0) {
                     FunctionListItem item = new FunctionListItem();
                     item.setTitle( getResources().getStringArray(titlesId) [position] );

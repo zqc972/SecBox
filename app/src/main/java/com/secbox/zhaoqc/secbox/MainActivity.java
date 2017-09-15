@@ -72,6 +72,9 @@ public class MainActivity extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+
+        //设置默认使用“最多使用”模块展示于首页
+        getSupportFragmentManager().beginTransaction().replace(R.id.container, MostUseFragment.newInstance()).commit();
     }
 
     @Override

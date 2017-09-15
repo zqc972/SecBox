@@ -54,14 +54,23 @@ public class ScanPortsFragment extends BaseFragment {
 
     private ExpandableListView expandableListView;
     private BaseExpandableListAdapter adapter;
-    private List<String> hostsList = new ArrayList<>();
-    private List<List<Integer>> portsList = new ArrayList<>();
+    private ArrayList<String> hostsList = new ArrayList<>();
+    private ArrayList<ArrayList<Integer>> portsList = new ArrayList<>();
 
     private Messenger mService;
     private Messenger messenger = new Messenger(new Handler() {
         @Override
         public void handleMessage(Message msgFromService) {
             switch (msgFromService.what) {
+                case 0:
+                    //获取服务状态
+                    break;
+                case 1:
+                    //添加主机
+                    Bundle bundle = msgFromService.getData();
+                    if(bundle != null)
+                        addPort(bundle.getString("host"),bundle.getInt("port"));
+                    break;
                 default:
                     Toast.makeText(getContext(),"received a message from service ",Toast.LENGTH_SHORT).show();
             }
@@ -264,7 +273,17 @@ public class ScanPortsFragment extends BaseFragment {
     }
 
     private void scan() {
+        try {
+            Bundle bundle = new Bundle();
+            bundle.putStringArrayList("hosts",hostsList);
 
+            Message message = new Message();
+            message.what = 1;
+            message.setData(bundle);
+            mService.send(message);
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        }
     }
 
     private void stop() {
@@ -274,7 +293,7 @@ public class ScanPortsFragment extends BaseFragment {
 
     private void addHost(String host) {
         hostsList.add(host);
-        List<Integer> childItems = new ArrayList<>();
+        ArrayList<Integer> childItems = new ArrayList<>();
         portsList.add(childItems);
         adapter.notifyDataSetChanged();
     }

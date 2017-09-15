@@ -14,6 +14,8 @@ import android.widget.Toast;
 
 import com.yanzhenjie.andserver.Server;
 
+import java.util.ArrayList;
+
 import module.PortScanner;
 
 /**
@@ -75,6 +77,31 @@ public class ScanPortsService extends Service {
     }
 
     public void start(Bundle configData) {
+        //添加目标主机
+        ArrayList<String> hostsList = configData.getStringArrayList("hosts");
+        portScanner.setHostList(hostsList);
+        //设置等待扫描的端口
+
+        //设置扫描的线程
+
+        portScanner.setOnScannedListener(new PortScanner.OnScannedListener() {
+            @Override
+            public void onScanned(String host, int port) {
+                try {
+                    Bundle bundle = new Bundle();
+                    bundle.putString("host",host);
+                    bundle.putInt("port",port);
+                    Message message = new Message();
+                    message.what = 1;
+                    message.setData(bundle);
+                    mClient.send(message);
+                } catch (RemoteException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+
+        //设置是否反复扫描
         portScanner.start(false);
     }
 
