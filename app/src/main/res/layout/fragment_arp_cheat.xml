@@ -1,44 +1,70 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:padding="4dp"
     tools:context="ui.ArpCheatFragment">
 
-    <EditText
-        android:id="@+id/target"
-        android:hint="Target IP"
+    <include layout="@layout/info_loading"
+        android:id="@+id/loading_view"
+        android:visibility="visible"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="match_parent" />
 
-    <EditText
-        android:id="@+id/source"
-        android:hint="Source IP"
+    <include layout="@layout/info_error"
+        android:id="@+id/error_view"
+        android:visibility="gone"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="match_parent" />
 
-    <TableLayout
+    <LinearLayout
+        android:id="@+id/work_view"
+        android:visibility="gone"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-        <TableRow>
-            <TextView android:text="State:"/>
-            <TextView
-                android:text="Ready"
-                android:id="@+id/state"/>
-        </TableRow>
-        <TableRow>
-            <TextView android:text="Running Time:    "/>
-            <TextView
-                android:text="00:00:00"
-                android:id="@+id/start_time"/>
-        </TableRow>
-    </TableLayout>
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:padding="4dp">
 
-    <ToggleButton
-        android:id="@+id/start"
-        android:layout_gravity="right"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        <EditText
+            android:id="@+id/target"
+            android:hint="Target IP"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
 
-</LinearLayout>
+        <EditText
+            android:id="@+id/source"
+            android:hint="Source IP"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <TableLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <TableRow>
+                <TextView android:text="State:"/>
+                <TextView
+                    android:text="Ready"
+                    android:id="@+id/state"/>
+            </TableRow>
+            <TableRow>
+                <TextView android:text="Running Time:    "/>
+                <TextView
+                    android:text="00:00:00"
+                    android:id="@+id/start_time"/>
+            </TableRow>
+        </TableLayout>
+
+        <CheckBox
+            android:id="@+id/transmitter"
+            android:text="允许包转发"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <ToggleButton
+            android:id="@+id/start"
+            android:layout_gravity="right"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+    </LinearLayout>
+
+</FrameLayout>

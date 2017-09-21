@@ -45,10 +45,6 @@ public class WebServerFragment extends BaseFragment {
 
     private boolean isRunning = false;
 
-    private WebSite webSite = null;
-    private Server.Listener listener = null;
-    private Server mServer = null;
-
     private Messenger mService;
     private Messenger messenger = new Messenger(new Handler() {
         @Override
@@ -107,23 +103,6 @@ public class WebServerFragment extends BaseFragment {
         mPort = (EditText) rootView.findViewById(R.id.server_port);
         mRootDir = (TextView)rootView.findViewById(R.id.root_dir);
 
-        listener = new Server.Listener() {
-            @Override
-            public void onStarted() {
-                mState.setText("Started");
-            }
-
-            @Override
-            public void onStopped() {
-                mState.setText("Stopped");
-            }
-
-            @Override
-            public void onError(Exception e) {
-                mState.setText("Error");
-            }
-        };
-
         mRootDir.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -135,56 +114,10 @@ public class WebServerFragment extends BaseFragment {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if(isChecked) {
-                    WebServer webServer = new WebServer(getContext());
-                    webServer.setToolsPath("/data/data/com.secbox.zhaoqc.secbox/files/httpd");
-                    webServer.setRootDirPath(Environment.getExternalStorageDirectory().getAbsolutePath() + "/www");
-                    webServer.setPort(80);
-                    webServer.start();
-
-                    final int port = Integer.parseInt(mPort.getText().toString());
-
-                    Thread thread = new Thread(new Runnable() {
-                        @Override
-                        public void run() {
-                            if(port < 1024) {
-                                try {
-                                    Process p = Runtime.getRuntime().exec("su");
-                                    if(p.waitFor() == 0) {
-                                        webSite = new StorageWebsite(mRootDir.getText().toString());
-                                        AndServer andServer = new AndServer.Build()
-                                                .port(port)
-                                                .timeout(10 * 1000)
-                                                .listener(listener)
-                                                .website(webSite)
-                                                .build();
-                                        mServer = andServer.createServer();
-                                        mServer.start();
-                                    }
-                                } catch (IOException e) {
-                                    e.printStackTrace();
-                                } catch (InterruptedException e) {
-                                    e.printStackTrace();
-                                }
-                            } else {
-                                webSite = new StorageWebsite(mRootDir.getText().toString());
-                                AndServer andServer = new AndServer.Build()
-                                        .port(port)
-                                        .timeout(10 * 1000)
-                                        .listener(listener)
-                                        .website(webSite)
-                                        .build();
-                                mServer = andServer.createServer();
-                                mServer.start();
-                            }
-                            Log.i("WebServerFragment","WebServer is starting ");
-                        }
-                    });
-                    thread.start();
+                    int port = Integer.parseInt(mPort.getText().toString());
 
                 } else {
-                    if(mServer != null) {
-                        mServer.stop();
-                    }
+
                 }
             }
         });
