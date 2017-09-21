@@ -102,11 +102,22 @@ public class ArpCheatService extends Service {
     }
 
     public void start(Bundle configData) {
-
+        String hostA = configData.getString("hostA");
+        String hostB = configData.getString("hostB");
+        String networkInterface = configData.getString("networkInterface");
+        String toolPath = "/data/data/com.secbox.zhaoqc.secbox/files/arpspoof";
+        if(arpAttacker == null)
+            arpAttacker = new ArpAttacker(getApplicationContext());
+        arpAttacker.setToolPath(toolPath);
+        arpAttacker.setHostA(hostA);
+        arpAttacker.setHostB(hostB);
+        arpAttacker.setNetworkInterface(networkInterface);
+        arpAttacker.start();
     }
 
     public void stop() {
-
+        if(arpAttacker != null)
+            arpAttacker.stop();
     }
 
     public void enableTransmit(boolean flag) {

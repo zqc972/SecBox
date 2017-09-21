@@ -30,6 +30,8 @@ public class ArpCheatFragment extends BaseFragment {
 
     private ToggleButton button;
     private CheckBox mTransmitter;
+    private TextView hostA;
+    private TextView hostB;
 
     private View loadingView;
     private View errorView;
@@ -113,6 +115,8 @@ public class ArpCheatFragment extends BaseFragment {
 
         button = (ToggleButton)workView.findViewById(R.id.start);
         mTransmitter = (CheckBox) workView.findViewById(R.id.transmitter);
+        hostA = (TextView) workView.findViewById(R.id.hostA);
+        hostB = (TextView) workView.findViewById(R.id.hostB);
 
         button.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
@@ -160,8 +164,13 @@ public class ArpCheatFragment extends BaseFragment {
 
     private void start() {
         try {
+            Bundle bundle = new Bundle();
+            bundle.putString("hostA",hostA.getText().toString());
+            bundle.putString("hostB",hostB.getText().toString());
+            bundle.putString("networkInterface","eth0"); //
             Message message = new Message();
             message.what = 1;
+            message.setData(bundle);
             mService.send(message);
         } catch (RemoteException e) {
             e.printStackTrace();
