@@ -91,8 +91,26 @@ public class ArpCheatService extends Service {
                 }
 
                 try {
+                    Bundle bundle = new Bundle();
+                    bundle.putBoolean("isRunning",arpAttacker.isRunning());
+                    String transmit_flag = "0";
+                    try {
+                        transmit_flag = ShellUtils.run(new String[]{"cat","/proc/sys/net/ipv4/ip_forward"},"/");
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                    transmit_flag = transmit_flag.replace("\n","");
+
+                    int flag = Integer.parseInt(transmit_flag);
+                    if(flag == 0)
+                        bundle.putBoolean("transmit_flag", false);
+                    else
+                        bundle.putBoolean("transmit_flag", true);
+                    bundle.putString("hostA",arpAttacker.getHostA());
+                    bundle.putString("hostB",arpAttacker.getHostB());
                     Message message = new Message();
                     message.what = result_code;
+                    message.setData(bundle);
                     mClient.send(message);
                 } catch (RemoteException e) {
                     e.printStackTrace();
@@ -106,9 +124,11 @@ public class ArpCheatService extends Service {
         String hostB = configData.getString("hostB");
         String networkInterface = configData.getString("networkInterface");
         String toolPath = "/data/data/com.secbox.zhaoqc.secbox/files/arpspoof";
+        String pkillPath = "/data/data/com.secbox.zhaoqc.secbox/files/pkill";
         if(arpAttacker == null)
             arpAttacker = new ArpAttacker(getApplicationContext());
         arpAttacker.setToolPath(toolPath);
+        arpAttacker.setPkillPath(pkillPath);
         arpAttacker.setHostA(hostA);
         arpAttacker.setHostB(hostB);
         arpAttacker.setNetworkInterface(networkInterface);

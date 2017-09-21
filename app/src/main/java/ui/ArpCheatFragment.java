@@ -29,9 +29,12 @@ import service.ArpCheatService;
 public class ArpCheatFragment extends BaseFragment {
 
     private ToggleButton button;
+    private CompoundButton.OnCheckedChangeListener onCheckedChangeListener1;
     private CheckBox mTransmitter;
+    private CompoundButton.OnCheckedChangeListener onCheckedChangeListener2;
     private TextView hostA;
     private TextView hostB;
+    private TextView state;
 
     private View loadingView;
     private View errorView;
@@ -47,6 +50,21 @@ public class ArpCheatFragment extends BaseFragment {
                     loadingView.setVisibility(View.GONE);
                     errorView.setVisibility(View.GONE);
                     workView.setVisibility(View.VISIBLE);
+                    if(msgFromService.getData().getBoolean("isRunning")) {
+                        button.setOnCheckedChangeListener(null);
+                        button.setChecked(true);
+                        button.setOnCheckedChangeListener(onCheckedChangeListener1);
+                        state.setText("Running");
+                    } else {
+                        state.setText("stopped");
+                    }
+                    if(msgFromService.getData().getBoolean("transmit_flag")) {
+                        mTransmitter.setOnCheckedChangeListener(null);
+                        mTransmitter.setChecked(true);
+                        mTransmitter.setOnCheckedChangeListener(onCheckedChangeListener2);
+                    }
+                    hostA.setText(msgFromService.getData().getString("hostA"));
+                    hostB.setText(msgFromService.getData().getString("hostB"));
                     break;
                 case 1:
                     //获取root失败，切换提示信息
@@ -117,8 +135,9 @@ public class ArpCheatFragment extends BaseFragment {
         mTransmitter = (CheckBox) workView.findViewById(R.id.transmitter);
         hostA = (TextView) workView.findViewById(R.id.hostA);
         hostB = (TextView) workView.findViewById(R.id.hostB);
+        state = (TextView) workView.findViewById(R.id.state);
 
-        button.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+        onCheckedChangeListener1 = new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if(isChecked)
@@ -126,8 +145,8 @@ public class ArpCheatFragment extends BaseFragment {
                 else
                     stop();
             }
-        });
-        mTransmitter.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+        };
+        onCheckedChangeListener2 = new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 try {
@@ -142,7 +161,10 @@ public class ArpCheatFragment extends BaseFragment {
                     e.printStackTrace();
                 }
             }
-        });
+        };
+
+        button.setOnCheckedChangeListener(onCheckedChangeListener1);
+        mTransmitter.setOnCheckedChangeListener(onCheckedChangeListener2);
 
         loadingView.setVisibility(View.VISIBLE);
         errorView.setVisibility(View.GONE);
@@ -163,6 +185,10 @@ public class ArpCheatFragment extends BaseFragment {
     }
 
     private void start() {
+        //类似于加锁的功能，不让Service自动退出
+        Intent intent = new Intent(getContext(),ArpCheatService.class);
+        getContext().startService(intent);
+
         try {
             Bundle bundle = new Bundle();
             bundle.putString("hostA",hostA.getText().toString());
@@ -178,6 +204,10 @@ public class ArpCheatFragment extends BaseFragment {
     }
 
     private void stop() {
+        //类似于去锁的功能，让Service自动退出
+        Intent intent = new Intent(getContext(),ArpCheatService.class);
+        getContext().stopService(intent);
+
         try {
             Message message = new Message();
             message.what = 2;

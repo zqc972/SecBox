@@ -40,16 +40,10 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
             <TableRow>
-                <TextView android:text="State:"/>
+                <TextView android:text="状态:"/>
                 <TextView
                     android:text="Ready"
                     android:id="@+id/state"/>
-            </TableRow>
-            <TableRow>
-                <TextView android:text="Running Time:    "/>
-                <TextView
-                    android:text="00:00:00"
-                    android:id="@+id/start_time"/>
             </TableRow>
         </TableLayout>
 

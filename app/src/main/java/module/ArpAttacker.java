@@ -19,6 +19,9 @@ public class ArpAttacker {
     private String hostB = null;     //攻击者
     private String networkInterface = null;    //网卡接口
     private String toolPath = null;     //工具路径
+    private String pkillPath = null;
+
+    private Thread attackerThread = null;
 
     public ArpAttacker(Context context) {
         this.mContext = context;
@@ -40,8 +43,12 @@ public class ArpAttacker {
         this.toolPath = path;
     }
 
+    public void setPkillPath(String path) {
+        this.pkillPath = path;
+    }
+
     public void start() {
-        new Thread() {
+        attackerThread = new Thread() {
             @Override
             public void run() {
                 if(hostA != null
@@ -59,7 +66,8 @@ public class ArpAttacker {
                     }
                 }
             }
-        }.start();
+        };
+        attackerThread.start();
     }
 
     public void stop() {
@@ -67,8 +75,17 @@ public class ArpAttacker {
             @Override
             public void run() {
                 try {
-                    Process p = Runtime.getRuntime().exec("su -c");
+                    Process p = Runtime.getRuntime().exec("su");
+                    DataOutputStream os = new DataOutputStream(p.getOutputStream());
+                    os.writeBytes(pkillPath + " -SIGINT arpspoof\n");
+                    os.writeBytes("exit\n");
+                    os.flush();
                     p.waitFor();
+
+                    if(attackerThread != null)
+                        attackerThread.interrupt();
+                    attackerThread = null;
+
                 } catch (IOException e) {
                     e.printStackTrace();
                 } catch (InterruptedException e) {
@@ -76,6 +93,13 @@ public class ArpAttacker {
                 }
             }
         }.start();
+    }
+
+    public boolean isRunning() {
+        if(attackerThread != null)
+            return true;
+        else
+            return false;
     }
 
     //允许包转发
@@ -116,4 +140,17 @@ public class ArpAttacker {
         }.start();
     }
 
+    public String getHostA() {
+        if(this.hostA != null)
+            return this.hostA;
+        else
+            return "";
+    }
+
+    public String getHostB() {
+        if(this.hostA != null)
+            return this.hostB;
+        else
+            return "";
+    }
 }
