@@ -6,20 +6,6 @@
     tools:context="ui.ScanHostsFragment">
 
     <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/colorAccent"
-        android:orientation="horizontal">
-
-        <TextView
-            android:text=""
-            android:layout_weight="1"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
-
-    </LinearLayout>
-
-    <LinearLayout
         android:id="@+id/progress_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -42,7 +28,14 @@
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/hosts_list"
+        android:layout_weight="1"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="wrap_content" />
+
+    <Button
+        android:id="@+id/scan"
+        android:text="开始扫描"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
 
 </LinearLayout>

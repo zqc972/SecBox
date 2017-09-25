@@ -18,6 +18,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -39,6 +40,7 @@ public class ScanHostsFragment extends BaseFragment {
     private TextView mState = null;
     private ProgressBar mProgress = null;
     private LinearLayout mProgressLayout = null;
+    private Button mStart = null;
 
     private Messenger mService;
     private Messenger mMessenger = new Messenger(new Handler() {
@@ -120,6 +122,21 @@ public class ScanHostsFragment extends BaseFragment {
         mProgressLayout.setVisibility(View.GONE);
         mProgress = (ProgressBar) rootView.findViewById(R.id.progress);
         mState = (TextView) rootView.findViewById(R.id.state);
+        mStart = (Button) rootView.findViewById(R.id.scan);
+
+        mStart.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                try {
+                    Message message = new Message();
+                    message.what = 1;
+                    message.replyTo = mMessenger;
+                    mService.send(message);
+                } catch (RemoteException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
 
         RecyclerView recyclerView = (RecyclerView) rootView.findViewById(R.id.hosts_list);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
@@ -135,11 +152,16 @@ public class ScanHostsFragment extends BaseFragment {
     }
 
     public void loadData() {
+        //本机
         HostListItem item = new HostListItem();
-        item.setHost_ip(1761716416);
-        item.setHost_mac("test");
-        item.setHost_manufacturer("test");
-        item.setHost_name("test");
+        item.setHost_ip(NetworkUtils.getIp(getContext()));
+        item.setHost_mac(NetworkUtils.getMac(getContext()));
+        String mac = NetworkUtils.getMac(getContext());
+        if(mac != null)
+            item.setHost_manufacturer(NetworkUtils.getManufacturerByMac(mac));
+        else
+            item.setHost_manufacturer("unkown");
+        item.setHost_name("本机");
         items.add(item);
         adapter.notifyDataSetChanged();
     }
@@ -183,19 +205,6 @@ public class ScanHostsFragment extends BaseFragment {
             holder.host_ip.setText(NetworkUtils.IpToString(items.get(position).getHost_ip()));
             holder.host_mac.setText(items.get(position).getHost_mac());
             holder.host_manufacturer.setText(items.get(position).getHost_manufacturer());
-            holder.itemView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    try {
-                        Message message = new Message();
-                        message.what = 1;
-                        message.replyTo = mMessenger;
-                        mService.send(message);
-                    } catch (RemoteException e) {
-                        e.printStackTrace();
-                    }
-                }
-            });
         }
 
         @Override
