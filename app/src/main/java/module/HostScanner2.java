@@ -6,6 +6,8 @@ import android.util.Log;
 import java.io.IOException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 import utils.NetworkUtils;
 
@@ -20,11 +22,11 @@ public class HostScanner2 {
     private int ipAddress;
     private int netmask;
 
-    private static int current_ip;
+    private static int current_ip;  //当前扫描的ip
     private static int hosts_size;
-    private static int scanned_count;
 
-    private ExecutorService cachedThreadPool = null;
+
+    private ScheduledExecutorService mThreadPool = null;
 
     public HostScanner2(Context context,int ipAddress,int netmask) {
         this.context = context;
@@ -35,19 +37,18 @@ public class HostScanner2 {
     public void start() {
         current_ip = NetworkUtils.getFirstIp(ipAddress,netmask);
         hosts_size = NetworkUtils.countHost(netmask);
-        scanned_count = 0;
 
-        cachedThreadPool = Executors.newFixedThreadPool(50);
+        mThreadPool = Executors.newScheduledThreadPool(50);
         for (int i = 0;i < hosts_size;i++ ){
             ScanThread thread = new ScanThread();
             thread.setTargetIP(getNextIP());
-            cachedThreadPool.execute(thread);
+            mThreadPool.schedule(thread,0, TimeUnit.SECONDS);
         }
     }
 
     public void stop() {
-        if(cachedThreadPool != null)
-            cachedThreadPool.shutdown();
+        if(mThreadPool != null)
+            mThreadPool.shutdown();
     }
 
     //扫描监听回调

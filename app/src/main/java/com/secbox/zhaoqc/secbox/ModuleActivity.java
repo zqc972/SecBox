@@ -1,9 +1,7 @@
 package com.secbox.zhaoqc.secbox;
 
-import android.support.design.widget.Snackbar;
-import android.support.v4.app.Fragment;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -15,6 +13,7 @@ import db.ModuleFreqCount;
 import ui.ArpCheatFragment;
 import ui.BaseFragment;
 import ui.PasswordGenenratorFragment;
+import ui.ScanBackstageFragment;
 import ui.ScanHostsFragment;
 import ui.ScanPortsFragment;
 import ui.SnifferFragment;
@@ -110,6 +109,8 @@ public class ModuleActivity extends AppCompatActivity {
                         return ScanPortsFragment.newInstance();
                     case 2:
                         return WebCloneFragment.newInstance();
+                    case 3:
+                        return ScanBackstageFragment.newInstance();
                     default:
                         return null;
                 }

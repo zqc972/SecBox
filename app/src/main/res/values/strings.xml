@@ -14,12 +14,14 @@
         <item>扫描主机</item>
         <item>扫描端口</item>
         <item>Web克隆</item>
+        <item>网站后台扫描</item>
     </array>
 
     <array name="nav_scan_tools_subtitles">
         <item>扫描互联网上的主机</item>
         <item>扫描主机开放的端口</item>
         <item>将web页面克隆至本地</item>
+        <item>扫描网站常见后台URL</item>
     </array>
 
     <array name="nav_cheat_attack_titles">

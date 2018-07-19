@@ -1,26 +1,19 @@
 package com.secbox.zhaoqc.secbox;
 
 import android.Manifest;
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
-import android.os.AsyncTask;
-import android.os.Build;
-import android.os.Environment;
+import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
-import android.text.Html;
 import android.util.Log;
-import android.widget.EditText;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
-import org.litepal.crud.DataSupport;
 import org.litepal.tablemanager.Connector;
 
 import java.util.ArrayList;
@@ -85,6 +78,7 @@ public class WelcomeActivity extends AppCompatActivity {
                 case 2:
                     Intent intent = new Intent(WelcomeActivity.this,MainActivity.class);
                     startActivity(intent);
+                    finish();
                     break;
                 default:
             }
